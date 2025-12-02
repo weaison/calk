@@ -1,0 +1,458 @@
+:root {
+    --primary: #000000;
+    --primary-dark: #333333;
+    --primary-light: #666666;
+    --accent: #F58220;
+    --accent-dark: #D96D0D;
+    --accent2: #FF9F40;
+    --light: #F8F9FA;
+    --dark: #2C3E50;
+    --gray: #E1E3E6;
+    --surface: #FFFFFF;
+    --border: #E0E7ED;
+    --error: #E74C3C;
+    --success: #27AE60;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+    color: var(--dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 0.5rem;
+}
+
+.container {
+    max-width: 1200px;
+    min-height: calc(100vh - 1rem);
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.5px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.3rem;
+    background: linear-gradient(to right, #F58220, #FF9F40);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    flex: 1;
+    overflow: auto;
+}
+
+.section {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border);
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 30px;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--accent2));
+    border-radius: 3px;
+}
+
+.input-group {
+    margin-bottom: 1.2rem;
+    position: relative;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.checkbox-container label {
+    font-weight: 500;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.disabled-group {
+    opacity: 0.6;
+}
+.disabled-group > *:not(.checkbox-container) {
+    pointer-events: none;
+}
+
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    font-size: 0.85rem;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: var(--light);
+    color: var(--dark);
+}
+
+input::placeholder, textarea::placeholder {
+    color: rgba(44, 62, 80, 0.4);
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 
+        0 0 0 3px rgba(245, 130, 32, 0.1);
+    outline: none;
+    background: white;
+}
+
+.dim-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(248, 249, 250, 0.7);
+    border-top: 1px solid var(--border);
+}
+
+button {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.05);
+    flex: 1;
+    min-width: 120px;
+    max-width: 100%;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+button:hover::before {
+    opacity: 1;
+}
+
+#pdfButton {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+}
+
+#previewButton {
+    background: linear-gradient(135deg, var(--accent2) 0%, #FF9F40 100%);
+}
+
+.result-box {
+    padding: 1rem;
+    margin: 0 1rem 1rem;
+    background: var(--surface);
+    border-radius: 10px;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.03);
+    max-height: 200px;
+    overflow: auto;
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+}
+
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.7rem;
+    padding: 0.8rem;
+    background: #F8F9FA;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border-left: 3px solid var(--accent);
+    transition: all 0.3s ease;
+}
+
+.report-item:hover {
+    background: #F1F8FE;
+}
+
+.report-total {
+    font-weight: 600;
+    background: rgba(245, 130, 32, 0.05);
+    border-left: 3px solid var(--accent-dark);
+    color: var(--primary);
+}
+
+.report-unit {
+    font-weight: 600;
+    background: rgba(255, 159, 64, 0.05);
+    border-left: 3px solid var(--accent2);
+    color: var(--primary);
+}
+
+.error {
+    color: var(--error);
+    padding: 1rem;
+    background: rgba(231, 76, 60, 0.05);
+    border-radius: 10px;
+    margin: 0 1rem 1rem;
+    border: 1px solid var(--error);
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.manager-input {
+    position: static;
+    margin: 0.8rem auto 0;
+    width: 100%;
+    max-width: 250px;
+}
+
+#managerName {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    font-size: 0.85rem;
+    width: 100%;
+    transition: all 0.3s;
+    backdrop-filter: blur(5px);
+    text-align: center;
+}
+
+#managerName::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#managerName:focus {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+    outline: none;
+}
+
+.bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.03;
+    background: 
+        linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+        linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+        linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+        linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+        linear-gradient(60deg, rgba(245, 130, 32, 0.5) 25%, transparent 25.5%, transparent 75%, rgba(245, 130, 32, 0.5) 75%, rgba(245, 130, 32, 0.5)),
+        linear-gradient(60deg, rgba(245, 130, 32, 0.5) 25%, transparent 25.5%, transparent 75%, rgba(245, 130, 32, 0.5) 75%, rgba(245, 130, 32, 0.5));
+    background-size: 80px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+}
+
+@media (min-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr 1fr;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+    
+    .section {
+        padding: 1.5rem;
+    }
+    
+    .logo {
+        font-size: 2.5rem;
+    }
+    
+    .header {
+        padding: 1.5rem;
+    }
+    
+    .actions {
+        padding: 1.5rem;
+        gap: 1.2rem;
+    }
+    
+    button {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        flex: none;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+    }
+    
+    .manager-input {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: auto;
+        max-width: 200px;
+        margin: 0;
+        z-index: 2;
+    }
+    
+    #managerName {
+        text-align: left;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        height: calc(100vh - 1rem);
+    }
+    
+    .main-content {
+        height: calc(100% - 140px);
+    }
+    
+    .result-box {
+        max-height: 220px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dim-inputs {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+    }
+    
+    .actions button {
+        min-width: 100%;
+    }
+    
+    .section {
+        padding: 1rem;
+    }
+    
+    .result-box {
+        margin: 0 0.5rem 0.5rem;
+        padding: 0.8rem;
+    }
+    
+    .report-item {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
