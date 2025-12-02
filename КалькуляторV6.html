@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПРО100ПАК Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-dark: #333333;
+            --primary-light: #666666;
+            --accent: #F58220;
+            --accent-dark: #D96D0D;
+            --accent2: #FF9F40;
+            --light: #F8F9FA;
+            --dark: #2C3E50;
+            --gray: #E1E3E6;
+            --surface: #FFFFFF;
+            --border: #E0E7ED;
+            --error: #E74C3C;
+            --success: #27AE60;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            min-height: calc(100vh - 1rem);
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.05),
+                0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 0.3rem;
+            background: linear-gradient(to right, #F58220, #FF9F40);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            flex: 1;
+            overflow: auto;
+        }
+
+        .section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), var(--accent2));
+            border-radius: 3px;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .checkbox-container label {
+            font-weight: 500;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .disabled-group {
+            opacity: 0.6;
+        }
+        .disabled-group > *:not(.checkbox-container) {
+            pointer-events: none;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(44, 62, 80, 0.4);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 
+                0 0 0 3px rgba(245, 130, 32, 0.1);
+            outline: none;
+            background: white;
+        }
+
+        .dim-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(248, 249, 250, 0.7);
+            border-top: 1px solid var(--border);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 2px 5px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            min-width: 120px;
+            max-width: 100%;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        button:hover::before {
+            opacity: 1;
+        }
+
+        #pdfButton {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+        }
+
+        #previewButton {
+            background: linear-gradient(135deg, var(--accent2) 0%, #FF9F40 100%);
+        }
+
+        .result-box {
+            padding: 1rem;
+            margin: 0 1rem 1rem;
+            background: var(--surface);
+            border-radius: 10px;
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.03);
+            max-height: 200px;
+            overflow: auto;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.7rem;
+            padding: 0.8rem;
+            background: #F8F9FA;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 3px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .report-item:hover {
+            background: #F1F8FE;
+        }
+
+        .report-total {
+            font-weight: 600;
+            background: rgba(245, 130, 32, 0.05);
+            border-left: 3px solid var(--accent-dark);
+            color: var(--primary);
+        }
+
+        .report-unit {
+            font-weight: 600;
+            background: rgba(255, 159, 64, 0.05);
+            border-left: 3px solid var(--accent2);
+            color: var(--primary);
+        }
+
+        .error {
+            color: var(--error);
+            padding: 1rem;
+            background: rgba(231, 76, 60, 0.05);
+            border-radius: 10px;
+            margin: 0 1rem 1rem;
+            border: 1px solid var(--error);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .manager-input {
+            position: static;
+            margin: 0.8rem auto 0;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        #managerName {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 0.85rem;
+            width: 100%;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            text-align: center;
+        }
+
+        #managerName::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #managerName:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+            outline: none;
+        }
+
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background: 
+                linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+                linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+                linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+                linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+                linear-gradient(60deg, rgba(245, 130, 32, 0.5) 25%, transparent 25.5%, transparent 75%, rgba(245, 130, 32, 0.5) 75%, rgba(245, 130, 32, 0.5)),
+                linear-gradient(60deg, rgba(245, 130, 32, 0.5) 25%, transparent 25.5%, transparent 75%, rgba(245, 130, 32, 0.5) 75%, rgba(245, 130, 32, 0.5));
+            background-size: 80px 140px;
+            background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+                padding: 1.5rem;
+                gap: 1.5rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .header {
+                padding: 1.5rem;
+            }
+            
+            .actions {
+                padding: 1.5rem;
+                gap: 1.2rem;
+            }
+            
+            button {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+                flex: none;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .manager-input {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: auto;
+                max-width: 200px;
+                margin: 0;
+                z-index: 2;
+            }
+            
+            #managerName {
+                text-align: left;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                height: calc(100vh - 1rem);
+            }
+            
+            .main-content {
+                height: calc(100% - 140px);
+            }
+            
+            .result-box {
+                max-height: 220px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dim-inputs {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+            
+            .actions button {
+                min-width: 100%;
+            }
+            
+            .section {
+                padding: 1rem;
+            }
+            
+            .result-box {
+                margin: 0 0.5rem 0.5rem;
+                padding: 0.8rem;
+            }
+            
+            .report-item {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="manager-input">
+                <input type="text" id="managerName" placeholder="Имя менеджера">
+            </div>
+            <div class="logo">ПРО100ПАК</div>
+            <div class="subtitle"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="section">
+                <div class="section-title">Основные параметры</div>
+                <div class="input-group">
+                    <label>Количество SKU</label>
+                    <input type="number" id="sku" min="1" value="1">
+                </div>
+                <div class="input-group">
+                    <label>Количество товара</label>
+                    <input type="number" id="quantity" min="1" value="1">
+                </div>
+                <div class="input-group">
+                    <label>Габариты (см)</label>
+                    <div class="dim-inputs">
+                        <input type="number" id="length" placeholder="Д" step="0.1">
+                        <input type="number" id="width" placeholder="Ш" step="0.1">
+                        <input type="number" id="height" placeholder="В" step="0.1">
+                    </div>
+                </div>
+                <div class="input-group" id="group_personal_discount">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_personal_discount">
+                        <label for="toggle_personal_discount">Персональная скидка (%)</label>
+                    </div>
+                    <input type="number" id="personal_discount" value="0" min="0" max="100" placeholder="% скидки">
+                </div>
+                <div class="input-group" id="group_unit_markup">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_unit_markup">
+                        <label for="toggle_unit_markup">Добавить наценку за единицу (₽)</label>
+                    </div>
+                    <input type="number" id="unit_markup" value="0" min="0" step="0.1" placeholder="руб. за ед.">
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Дополнительные услуги</div>
+                
+                <div class="input-group" id="group_packaging0">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_packaging0">
+                        <label for="toggle_packaging0">Упаковка <i>(ввести кол-во слоёв)</i></label>
+                    </div>
+                    <select id="packaging0"></select>
+                    <input type="number" id="packaging_qty0" value="0" min="0" placeholder="Кол-во">
+                </div>
+
+                <div class="input-group" id="group_packaging1">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_packaging1">
+                        <label for="toggle_packaging1">Упаковка <i>(ввести кол-во слоёв)</i></label>
+                    </div>
+                    <select id="packaging1"></select>
+                    <input type="number" id="packaging_qty1" value="0" min="0" placeholder="Кол-во">
+                </div>
+
+                <div class="input-group" id="group_marking0">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_marking0">
+                        <label for="toggle_marking0">Маркировка <i>(ввести кол-во на единицу)</i></label>
+                    </div>
+                    <select id="marking0"></select>
+                    <input type="number" id="marking_qty0" value="0" min="0" placeholder="Кол-во">
+                </div>
+
+                <div class="input-group" id="group_marking1">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_marking1">
+                        <label for="toggle_marking1">Маркировка <i>(ввести кол-во на единицу)</i></label>
+                    </div>
+                    <select id="marking1"></select>
+                    <input type="number" id="marking_qty1" value="0" min="0" placeholder="Кол-во">
+                </div>
+
+                <div class="input-group" id="group_quality">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_quality">
+                        <label for="toggle_quality">Проверка качества</label>
+                    </div>
+                    <select id="quality"></select>
+                </div>
+
+                <div class="input-group" id="group_tag_qty">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_tag_qty">
+                        <label for="toggle_tag_qty">Кол-во бирок <i>(ввести кол-во на единицу)</i></label>
+                    </div>
+                    <input type="number" id="tag_qty" value="0" min="0">
+                </div>
+
+                <div class="input-group" id="group_extra_actions">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_extra_actions">
+                        <label for="toggle_extra_actions">Доп. действия <i>(ввести кол-во действий)</i></label>
+                    </div>
+                    <input type="number" id="extra_actions" value="0" min="0" placeholder="Кол-во действий">
+                    <input type="text" id="extra_actions_desc" placeholder="Описание действий (через запятую)" style="margin-top: 0.5rem;">
+                </div>
+
+                <div class="input-group" id="group_kit_qty">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_kit_qty">
+                        <label for="toggle_kit_qty">Комплектация <i>(ввести кол-во единиц в комплекте)</i></label>
+                    </div>
+                    <input type="number" id="kit_qty" value="0" min="0">
+                </div>
+
+                <div class="input-group" id="group_insertion_qty">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="toggle_insertion_qty">
+                        <label for="toggle_insertion_qty">Вложения <i>(ввести кол-во на единицу)</i></label>
+                    </div>
+                    <input type="number" id="insertion_qty" value="0" min="0">
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button onclick="calculate()">Рассчитать</button>
+            <button onclick="generatePDFPreview()" id="previewButton" disabled>Просмотр КП</button>
+            <button onclick="generatePDF(true)" id="pdfButton" disabled>Скачать PDF</button>
+        </div>
+
+        <div id="result" class="result-box"></div>
+    </div>
+
+    <script>
+        let calculationResult = null;
+
+        function customRound(num) {
+            return Math.floor(num) + (num % 1 >= 0.5 ? 1 : 0);
+        }
+
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        const data = {
+            minOrder: 4000.0,
+            packaging: {
+                'БОПП 150/120': 3,
+                'БОПП 380/150': 5,
+                'БОПП 360/230': 6,
+                'БОПП 450/320': 9,
+                'БОПП 550/450': 13,
+                'Zip 150/200': 3,
+                'Zip 200/300': 6,
+                'Zip 250/350': 9,
+                'Zip 300/400': 11,
+                'Zip 350/450': 13,
+                'Zip 400/500': 15,
+                'Zip-lock 150/200': 10,
+                'Zip-lock 200/250': 12,
+                'Zip-lock 300/250': 14,
+                'Zip-lock 300/400': 20,
+                'Zip-lock 350/450': 22,
+                'Zip-lock 400/500': 28,
+                'Zip-lock 500/700': 42,
+                'Курьер 150/210': 5,
+                'Курьер 240/320': 12,
+                'Курьер 340/460': 21,
+                'Курьер 600/600': 55,
+                'Термо 250мм/650мп': 6,
+                'Термо 400мм/650мп': 8,
+                'Термо 450мм/650мп': 9,
+                'Запайка 200мм/330мп': 9,
+                'Запайка 300мм/330мп': 11,
+                'Запайка 500мм/250мп': 20,
+                'Запайка 100мм/650мп': 5,
+                'ВПП 15см/1м': 6,
+                'ВПП 35см/1м': 13,
+                'ВПП 75см/1м': 29,
+                'Упаковка в пакет клиента': 5,
+                'Сборка коробки': 5,
+            },
+            marking: {
+                'ШК': 5,
+                'КИЗ/ЧЗ': 6,
+                'Совмещ. этикетка': 8,
+            },
+            quality: {
+                "Легкая проверка (царапки, сколы, трещины)": 5,
+                "Обычная проверка (футболки, трусики, шортики и т.п.)": 10,
+                "Средняя проверка ( костюмы, свитшоты, ветровки и т.п)": 17,
+                "Тяжелая проверка (зимние куртки, техника вкл. и выкл.)": 45,
+            }
+        };
+
+        function hasAdditionalServices() {
+            // Проверяем упаковку
+            for (let i = 0; i < 2; i++) {
+                if (document.getElementById(`toggle_packaging${i}`).checked) {
+                    const type = document.getElementById(`packaging${i}`).value;
+                    const qty = parseFloat(document.getElementById(`packaging_qty${i}`).value) || 0;
+                    if (type && qty > 0) return true;
+                }
+            }
+
+            // Проверяем маркировку
+            for (let i = 0; i < 2; i++) {
+                if (document.getElementById(`toggle_marking${i}`).checked) {
+                    const type = document.getElementById(`marking${i}`).value;
+                    const qty = parseFloat(document.getElementById(`marking_qty${i}`).value) || 0;
+                    if (type && qty > 0) return true;
+                }
+            }
+
+            // Проверка качества
+            if (document.getElementById('toggle_quality').checked) {
+                const qualityType = document.getElementById('quality').value;
+                if (qualityType) return true;
+            }
+
+            // Бирки
+            if (document.getElementById('toggle_tag_qty').checked) {
+                const tagQty = parseFloat(document.getElementById('tag_qty').value) || 0;
+                if (tagQty > 0) return true;
+            }
+
+            // Доп. действия
+            if (document.getElementById('toggle_extra_actions').checked) {
+                const extraActions = parseFloat(document.getElementById('extra_actions').value) || 0;
+                if (extraActions > 0) return true;
+            }
+
+            // Комплектация
+            if (document.getElementById('toggle_kit_qty').checked) {
+                const kitQty = parseFloat(document.getElementById('kit_qty').value) || 0;
+                if (kitQty > 0) return true;
+            }
+
+            // Вложения
+            if (document.getElementById('toggle_insertion_qty').checked) {
+                const insertionQty = parseFloat(document.getElementById('insertion_qty').value) || 0;
+                if (insertionQty > 0) return true;
+            }
+
+            return false;
+        }
+
+        function initSelects() {
+            fillSelect('packaging0', data.packaging);
+            fillSelect('packaging1', data.packaging);
+            fillSelect('marking0', data.marking);
+            fillSelect('marking1', data.marking);
+            fillSelect('quality', data.quality, true);
+        }
+
+        function fillSelect(id, items, includeEmpty = false) {
+            const select = document.getElementById(id);
+            select.innerHTML = includeEmpty ? '<option value="">Выберите...</option>' : '';
+            Object.keys(items).forEach(key => {
+                if (key !== '') {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = key;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        function toggleGroup(checkboxId, groupId) {
+            const checkbox = document.getElementById(checkboxId);
+            const group = document.getElementById(groupId);
+            group.classList.toggle('disabled-group', !checkbox.checked);
+        }
+
+        function initCheckboxes() {
+            const personalDiscountCheckbox = document.getElementById('toggle_personal_discount');
+            personalDiscountCheckbox.addEventListener('change', () => 
+                toggleGroup('toggle_personal_discount', 'group_personal_discount')
+            );
+            toggleGroup('toggle_personal_discount', 'group_personal_discount');
+            
+            const unitMarkupCheckbox = document.getElementById('toggle_unit_markup');
+            unitMarkupCheckbox.addEventListener('change', () => 
+                toggleGroup('toggle_unit_markup', 'group_unit_markup')
+            );
+            toggleGroup('toggle_unit_markup', 'group_unit_markup');
+            
+            for(let i = 0; i < 2; i++) {
+                const checkboxPack = document.getElementById(`toggle_packaging${i}`);
+                checkboxPack.addEventListener('change', () => toggleGroup(`toggle_packaging${i}`, `group_packaging${i}`));
+                toggleGroup(`toggle_packaging${i}`, `group_packaging${i}`);
+
+                const checkboxMark = document.getElementById(`toggle_marking${i}`);
+                checkboxMark.addEventListener('change', () => toggleGroup(`toggle_marking${i}`, `group_marking${i}`));
+                toggleGroup(`toggle_marking${i}`, `group_marking${i}`);
+            }
+
+            const otherGroups = [
+                ['toggle_quality', 'group_quality'],
+                ['toggle_tag_qty', 'group_tag_qty'],
+                ['toggle_extra_actions', 'group_extra_actions'],
+                ['toggle_kit_qty', 'group_kit_qty'],
+                ['toggle_insertion_qty', 'group_insertion_qty']
+            ];
+
+            otherGroups.forEach(([checkboxId, groupId]) => {
+                const checkbox = document.getElementById(checkboxId);
+                checkbox.addEventListener('change', () => toggleGroup(checkboxId, groupId));
+                toggleGroup(checkboxId, groupId);
+            });
+        }
+
+        async function calculate() {
+            const resultElem = document.getElementById('result');
+            const pdfButton = document.getElementById('pdfButton');
+            const previewButton = document.getElementById('previewButton');
+            
+            try {
+                resultElem.innerHTML = '';
+                pdfButton.disabled = true;
+                previewButton.disabled = true;
+
+                const sku = parseInt(document.getElementById('sku').value);
+                const quantity = parseInt(document.getElementById('quantity').value);
+                if (isNaN(sku) || isNaN(quantity) || sku < 1 || quantity < 1) {
+                    throw new Error('Введите корректные положительные значения');
+                }
+
+                // Определяем базовую стоимость в зависимости от наличия дополнительных услуг
+                const hasServices = hasAdditionalServices();
+                const baseCost = hasServices ? 20 : 25;
+
+                const length = parseFloat(document.getElementById('length').value) || 0;
+                const width = parseFloat(document.getElementById('width').value) || 0;
+                const height = parseFloat(document.getElementById('height').value) || 0;
+                const volume = (length * width * height) / 1000;
+                const volumeMultiplier = volume > 30 ? 1.3 : 1.0;
+
+                let personalDiscountPercent = 0;
+                let personalDiscountApplied = false;
+                if (document.getElementById('toggle_personal_discount').checked) {
+                    personalDiscountPercent = parseFloat(document.getElementById('personal_discount').value) || 0;
+                    if (personalDiscountPercent > 0) {
+                        personalDiscountApplied = true;
+                    }
+                }
+
+                const totalDiscountPercent = personalDiscountPercent;
+                const totalDiscountMultiplier = 1 - totalDiscountPercent / 100;
+
+                let costs = {
+                    base: quantity * baseCost,
+                    skuSurcharge: sku > 50 ? 2 * quantity : 0,
+                    packaging: 0,
+                    marking: 0,
+                    quality: 0,
+                    tags: 0,
+                    kit: 0,
+                    insertion: 0,
+                    extra: 0
+                };
+
+                // Собираем детали услуг для PDF
+                let serviceDetails = {};
+
+                // Упаковка
+                let packagingDetails = [];
+                for (let i = 0; i < 2; i++) {
+                    if (!document.getElementById(`toggle_packaging${i}`).checked) continue;
+                    const type = document.getElementById(`packaging${i}`).value;
+                    const qty = parseFloat(document.getElementById(`packaging_qty${i}`).value) || 0;
+                    if (type && qty > 0) {
+                        costs.packaging += (data.packaging[type] || 0) * qty * quantity;
+                        packagingDetails.push(`${type} (${qty} слоёв)`);
+                    }
+                }
+                if (packagingDetails.length > 0) {
+                    serviceDetails.packaging = packagingDetails.join(', ');
+                }
+
+                // Маркировка
+                let markingDetails = [];
+                for (let i = 0; i < 2; i++) {
+                    if (!document.getElementById(`toggle_marking${i}`).checked) continue;
+                    const type = document.getElementById(`marking${i}`).value;
+                    const qty = parseFloat(document.getElementById(`marking_qty${i}`).value) || 0;
+                    
+                    let pricePerItem;
+                    if (type === 'ШК') {
+                        // ШК: 1 шт = 8 руб, 2+ шт = 5 руб/шт
+                        pricePerItem = qty === 1 ? 8 : 5;
+                    } else if (type === 'КИЗ/ЧЗ') {
+                        // КИЗ/ЧЗ: всегда 6 руб/шт
+                        pricePerItem = 6;
+                    } else if (type === 'Совмещ. этикетка') {
+                        // Совмещ. этикетка: всегда 8 руб/шт
+                        pricePerItem = 8;
+                    } else {
+                        pricePerItem = data.marking[type] || 0;
+                    }
+                    
+                    costs.marking += pricePerItem * qty * quantity;
+                    markingDetails.push(`${type} (${qty} шт. на ед.)`);
+                }
+                if (markingDetails.length > 0) {
+                    serviceDetails.marking = markingDetails.join(', ');
+                }
+
+                // Проверка качества
+                if (document.getElementById('toggle_quality').checked) {
+                    const qualityType = document.getElementById('quality').value;
+                    costs.quality = (data.quality[qualityType] || 0) * quantity;
+                    serviceDetails.quality = qualityType;
+                }
+
+                // Бирки
+                if (document.getElementById('toggle_tag_qty').checked) {
+                    const tagQty = parseFloat(document.getElementById('tag_qty').value) || 0;
+                    costs.tags = 3 * tagQty * quantity;
+                    serviceDetails.tags = `${tagQty} шт. на единицу`;
+                }
+
+                // Доп. действия
+                if (document.getElementById('toggle_extra_actions').checked) {
+                    const extraActions = parseFloat(document.getElementById('extra_actions').value) || 0;
+                    costs.extra = 3 * extraActions * quantity;
+                    const extraDesc = document.getElementById('extra_actions_desc').value.trim();
+                    if (extraDesc) {
+                        serviceDetails.extra = `${extraActions} действий: ${extraDesc}`;
+                    } else {
+                        serviceDetails.extra = `${extraActions} действий`;
+                    }
+                }
+
+                // Комплектация
+                if (document.getElementById('toggle_kit_qty').checked) {
+                    const kitQty = parseFloat(document.getElementById('kit_qty').value) || 0;
+                    costs.kit = 3 * kitQty * quantity;
+                    serviceDetails.kit = `${kitQty} единиц в комплекте`;
+                }
+
+                // Вложения
+                if (document.getElementById('toggle_insertion_qty').checked) {
+                    const insertionQty = parseFloat(document.getElementById('insertion_qty').value) || 0;
+                    costs.insertion = 2 * insertionQty * quantity;
+                    serviceDetails.insertion = `${insertionQty} шт. на единицу`;
+                }
+
+                let unitMarkup = 0;
+                if (document.getElementById('toggle_unit_markup').checked) {
+                    unitMarkup = parseFloat(document.getElementById('unit_markup').value) || 0;
+                }
+                const markupTotal = unitMarkup * quantity;
+
+                // Наценка добавляется только к базовой стоимости (приемка)
+                if (markupTotal > 0) {
+                    costs.base += markupTotal;
+                    serviceDetails.baseMarkup = `Наценка: ${unitMarkup} руб./ед.`;
+                }
+
+                let totalWithoutVolume = Object.values(costs).reduce((a, b) => a + b, 0);
+                let totalAfterVolume = totalWithoutVolume * volumeMultiplier;
+                
+                const totalAfterDiscount = totalAfterVolume * totalDiscountMultiplier;
+                
+                const total = Math.max(totalAfterDiscount, data.minOrder);
+                
+                const perUnit = total / quantity;
+
+                calculationResult = { 
+                    costs, 
+                    total, 
+                    perUnit,
+                    totalWithoutDiscount: totalAfterVolume,
+                    totalAfterDiscount: total,
+                    personalDiscountPercent,
+                    personalDiscountApplied,
+                    totalDiscountPercent,
+                    volumeMultiplier,
+                    sku: parseInt(document.getElementById('sku').value),
+                    quantity: parseInt(document.getElementById('quantity').value),
+                    length: parseFloat(document.getElementById('length').value) || 0,
+                    width: parseFloat(document.getElementById('width').value) || 0,
+                    height: parseFloat(document.getElementById('height').value) || 0,
+                    unitMarkup: unitMarkup,
+                    markupTotal: markupTotal,
+                    baseCost: baseCost,
+                    hasServices: hasServices,
+                    serviceDetails: serviceDetails
+                };
+
+                resultElem.innerHTML = `
+                    ${Object.entries(costs).map(([key, value]) => `
+                        <div class="report-item">
+                            <span>${getLabel(key)}:</span>
+                            <span>${customRound(value).toFixed(0)} руб.</span>
+                        </div>
+                    `).join('')}
+                    ${volumeMultiplier > 1 ? `
+                    <div class="report-item">
+                        <span>Надбавка за объем (+${(volumeMultiplier-1)*100}%):</span>
+                        <span>${customRound(totalWithoutVolume * (volumeMultiplier-1)).toFixed(0)} руб.</span>
+                    </div>` : ''}
+                    <div class="report-item report-total">
+                        <span>Итого к оплате:</span>
+                        <span>${customRound(total).toFixed(0)} руб.</span>
+                    </div>
+                    <div class="report-item report-unit">
+                        <span>Стоимость за единицу:</span>
+                        <span>${customRound(perUnit).toFixed(0)} руб.</span>
+                    </div>
+                `;
+
+                pdfButton.disabled = false;
+                previewButton.disabled = false;
+            } catch (e) {
+                resultElem.innerHTML = `<div class="error">${e.message}</div>`;
+                pdfButton.disabled = true;
+                previewButton.disabled = true;
+            }
+        }
+
+        function getLabel(key) {
+            const labels = {
+                base: 'Приемка',
+                skuSurcharge: 'Надбавка за SKU',
+                packaging: 'Упаковка',
+                marking: 'Маркировка',
+                quality: 'Проверка качества',
+                tags: 'Бирки',
+                kit: 'Комплектация',
+                insertion: 'Вложения',
+                extra: 'Доп. действия'
+            };
+            return labels[key] || key;
+        }
+
+        function generatePDFContent() {
+            if (!calculationResult) return '';
+            
+            const filteredCosts = Object.entries(calculationResult.costs)
+                .filter(([_, value]) => value > 0);
+
+            const serviceDescriptions = {
+                base: 'Разгрузка, пересчёт, фасовка по размерам и цветам',
+                marking: 'Печать и наклейка ШК/КИЗ/ЧЗ/Совмещ. этикетки',
+                packaging: 'Упаковка в пакет/коробку согласно спецификации',
+                tags: 'Прикрепление бирок этикет-пистолетом или на застежку',
+                kit: 'Комплектация товара в наборы',
+                extra: 'Дополнительные действия с товаром',
+                quality: 'Контроль качества и устранение брака',
+                insertion: 'Добавление вложений (подарки, визитки)'
+            };
+
+            const hasDimensions = calculationResult.length + calculationResult.width + calculationResult.height > 0;
+            const hasParams = calculationResult.sku || calculationResult.quantity || hasDimensions;
+
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const offerId = `EP-${Date.now().toString().slice(-6)}`;
+            
+            const serviceCount = filteredCosts.length;
+            let scaleFactor = 1.0;
+            if (serviceCount > 5) scaleFactor = 0.95;
+            if (serviceCount > 6) scaleFactor = 0.90;
+            if (serviceCount > 7) scaleFactor = 0.85;
+            if (serviceCount > 8) scaleFactor = 0.80;
+            
+            const scale = (value) => Math.round(value * scaleFactor * 10) / 10;
+            const scaled = (value) => `${scale(value)}px`;
+            
+            const baseFontSize = scale(11);
+            const titleFontSize = scale(13);
+            const headerFontSize = scale(18);
+            const mainTitleFontSize = scale(26);
+            const tableFontSize = scale(11);
+            const tablePadding = scale(9);
+            const sectionMargin = scale(12);
+            const blockPadding = scale(12);
+            const iconSize = scale(16);
+            
+            const managerName = document.getElementById('managerName').value || '';
+
+            return `
+                <div style="font-family: 'Inter', sans-serif; position: relative; min-height: 95vh; padding: ${scaled(25)}; background: #fff; font-size: ${baseFontSize}px; overflow: visible;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: ${scaled(15)}; border-bottom: 2px solid #F58220; margin-bottom: ${scaled(15)}; padding: 0 ${scaled(25)} ${scaled(10)}; color: #000;">
+                        <div>
+                            <div style="font-size: ${mainTitleFontSize}px; font-weight: 700; letter-spacing: -0.5px; color: #F58220;">ПРО100ПАК</div>
+                            <div style="font-size: ${scale(10)}px; color: #666; margin-top: ${scaled(3)};">Складские решения премиум-класса</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: ${headerFontSize}px; font-weight: 600; color: #000;">Коммерческое предложение</div>
+                            <div style="font-size: ${scale(10)}px; color: #666; margin-top: ${scaled(3)};">№ ${offerId} от ${formattedDate}</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: ${scaled(20)}; margin-bottom: ${scaled(15)};">
+                        <div>
+                            <div style="font-size: ${titleFontSize}px; font-weight: 600; color: #000; margin-bottom: ${scaled(5)};">Поставщик услуг</div>
+                            <div style="font-size: ${scale(10)}px; line-height: 1.4; color: #444;">
+                                <div><strong>ООО «ПРО100ПАК»</strong></div>
+                                <div>г. Москва, ул. Стахановская, 18 ст1</div>
+                                <div>Тел.: +7 (495) 162-85-00</div>
+                                <div>Email: easypackmsk@bk.ru</div>
+                                ${managerName ? `<div>Менеджер: ${managerName}</div>` : '<div>Менеджер:</div>'}
+                            </div>
+                        </div>
+                        
+                        ${hasParams ? `
+                        <div style="background: #f8fafc; border-radius: ${scaled(8)}; padding: ${scaled(15)}; border: 1px solid #e6ecf0; box-shadow: 0 ${scaled(2)} ${scaled(6)} rgba(0,0,0,0.03);">
+                            <div style="font-size: ${titleFontSize}px; font-weight: 600; color: #000; margin-bottom: ${scaled(8)}; display: flex; align-items: center;">
+                                <svg style="margin-right: ${scaled(6)};" width="${iconSize}px" height="${iconSize}px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M3.27 6.96L12 12.01 20.73 6.96M12 22.08V12" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Параметры товара
+                            </div>
+                            <div style="font-size: ${scale(10)}px; line-height: 1.4; color: #444;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: ${scaled(4)};">
+                                    <span style="color: #666;">SKU:</span>
+                                    <strong>${calculationResult.sku}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: ${scaled(4)};">
+                                    <span style="color: #666;">Кол-во:</span>
+                                    <strong>${calculationResult.quantity} шт.</strong>
+                                </div>
+                                ${hasDimensions ? `
+                                <div style="display: flex; justify-content: space-between; margin-bottom: ${scaled(4)};">
+                                    <span style="color: #666;">Длина:</span>
+                                    <strong>${calculationResult.length.toFixed(1)} см</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: ${scaled(4)};">
+                                    <span style="color: #666;">Ширина:</span>
+                                    <strong>${calculationResult.width.toFixed(1)} см</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #666;">Высота:</span>
+                                    <strong>${calculationResult.height.toFixed(1)} см</strong>
+                                </div>` : ''}
+                            </div>
+                        </div>` : ''}
+                    </div>
+
+                    <div style="margin-bottom: ${scaled(15)};">
+                        <div style="font-size: ${titleFontSize}px; font-weight: 600; color: #000; margin-bottom: ${scaled(10)}; display: flex; align-items: center;">
+                            <svg style="margin-right: ${scaled(8)};" width="${iconSize}px" height="${iconSize}px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                            Детализация услуг
+                        </div>
+                        
+                        <table style="width: 100%; border-collapse: collapse; font-size: ${tableFontSize}px; margin-bottom: ${scaled(15)};">
+                            <thead>
+                                <tr style="background: #F58220; color: #fff;">
+                                    <th style="padding: ${tablePadding}px ${scaled(12)}; text-align: left; width: 70%;">Услуга</th>
+                                    <th style="padding: ${tablePadding}px ${scaled(12)}; text-align: left; width: 30%;">Детали услуги</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filteredCosts.map(([key, value], index) => `
+                                    <tr style="${index % 2 === 0 ? 'background: #f8fafc;' : ''}">
+                                        <td style="padding: ${tablePadding}px ${scaled(12)}; border-bottom: 1px solid #e6ecf0;">
+                                            <div style="font-weight: 500;">${getLabel(key)}</div>
+                                            <div style="font-size: ${scale(9)}px; color: #666; margin-top: ${scaled(2)};">${serviceDescriptions[key] || ''}</div>
+                                        </td>
+                                        <td style="padding: ${tablePadding}px ${scaled(12)}; text-align: left; border-bottom: 1px solid #e6ecf0; font-weight: 500; font-size: ${scale(10)}px;">
+                                            ${calculationResult.serviceDetails[key] || ''}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                                
+                                ${calculationResult.volumeMultiplier > 1 ? `
+                                <tr>
+                                    <td style="padding: ${tablePadding}px ${scaled(12)}; border-bottom: 1px solid #e6ecf0;">
+                                        <div style="font-weight: 500;">Надбавка за объем</div>
+                                        <div style="font-size: ${scale(9)}px; color: #666; margin-top: ${scaled(2)};">Доплата за габаритный товар (объем >30л)</div>
+                                    </td>
+                                    <td style="padding: ${tablePadding}px ${scaled(12)}; text-align: left; border-bottom: 1px solid #e6ecf0; font-weight: 500; font-size: ${scale(10)}px;">
+                                        Объем товара превышает 30 литров
+                                    </td>
+                                </tr>` : ''}
+                                
+                                <tr style="background: #fef4e8;">
+                                    <td style="padding: ${scaled(12)}; text-align: right; font-weight: 700; font-size: ${scale(12)}px;" colspan="2">
+                                        ИТОГО: ${customRound(calculationResult.total).toFixed(0)} руб.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <!-- Цена за единицу - простой блок без больших отступов -->
+                        <div style="text-align: center; margin-top: ${scaled(10)}; margin-bottom: ${scaled(20)};">
+                            <div style="background: #fef4e8; border-radius: ${scaled(8)}; padding: ${scaled(8)} ${scaled(15)}; display: inline-block; border: 1px solid #f9e0c5;">
+                                <span style="font-size: ${scale(11)}px; color: #666; margin-right: ${scaled(8)};">Цена за единицу:</span>
+                                <span style="font-size: ${scale(16)}px; font-weight: 700; color: #F58220;">${customRound(calculationResult.perUnit).toFixed(0)} руб.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid #e6ecf0; padding-top: ${scaled(15)}; margin-bottom: ${scaled(50)};">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: ${scaled(20)};">
+                            <div style="font-size: ${scale(10)}px; color: #666; line-height: 1.4;">
+                                <div style="font-weight: 600; color: #000; margin-bottom: ${scaled(5)}; display: flex; align-items: center;">
+                                    <svg style="margin-right: ${scaled(5)};" width="${scale(14)}px" height="${scale(14)}px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 8v4M12 16h.01" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                    Условия предложения:
+                                </div>
+                                <div>• Срок действия: 30 календарных дней с даты формирования</div>
+                                <div>• Минимальная стоимость заказа: 4 000 рублей</div>
+                                <div>• Цены указаны без учета НДС</div>
+                            </div>
+
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                                <a href="https://drive.google.com/file/d/19dcddZaaQdVv9_Z5TbxrZxbkSP9RjoK0/view?usp=sharing" 
+                                   target="_blank"
+                                   style="text-decoration: none; color: #000; font-weight: 500; display: flex; align-items: center; gap: ${scaled(8)}; padding: ${scaled(10)} ${scaled(15)}; background: #f8fafc; border-radius: ${scaled(8)}; border: 1px solid #e0e7ed; transition: all 0.2s;">
+                                    <svg width="${scaled(16)}" height="${scaled(16)}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                    График отгрузок и стоимость
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; font-size: ${scale(8)}px; color: #666; padding: ${scaled(10)} ${scaled(25)}; background: #f8fafc; line-height: 1.4; border-top: 1px solid #e6ecf0; text-align: center;">
+                        <div style="max-width: 700px; margin: 0 auto;">
+                            КОНФИДЕНЦИАЛЬНО: Данный документ содержит конфиденциальную информацию. Любое несанкционированное распространение запрещено.
+                        </div>
+                        <div style="margin-top: ${scaled(3)};">© 2025 ПРО100ПАК</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function generatePDF(save = true) {
+            if (!calculationResult) {
+                alert('Сначала выполните расчет');
+                return;
+            }
+            
+            // Для мобильных устройств открываем предпросмотр вместо скачивания
+            if (isMobileDevice() && !save) {
+                generatePDFPreview();
+                return;
+            }
+            
+            const pdfContent = generatePDFContent();
+            
+            const opt = {
+                margin: 10,
+                filename: `ПРО100ПАК_КП_${Date.now().toString().slice(-6)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true, 
+                    letterRendering: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait',
+                    hotfixes: ["px_scaling"]
+                }
+            };
+
+            try {
+                const pdfButton = document.getElementById('pdfButton');
+                const originalButtonText = pdfButton.innerHTML;
+                pdfButton.innerHTML = '<span class="spinner"></span> Генерация...';
+                pdfButton.disabled = true;
+
+                const pdfBlob = await html2pdf().set(opt).from(pdfContent).output('blob');
+                
+                // Универсальный метод сохранения для всех устройств
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(pdfBlob);
+                a.download = opt.filename;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Безопасная очистка
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(a.href);
+                }, 100);
+                
+            } catch (e) {
+                console.error('PDF generation error:', e);
+                alert('Ошибка при создании PDF: ' + e.message);
+            } finally {
+                const pdfButton = document.getElementById('pdfButton');
+                pdfButton.innerHTML = isMobileDevice() ? 'Открыть PDF' : 'Скачать PDF';
+                pdfButton.disabled = false;
+            }
+        }
+
+        function generatePDFPreview() {
+            if (!calculationResult) {
+                alert('Сначала выполните расчет');
+                return;
+            }
+            
+            const pdfContent = generatePDFContent();
+            const previewWindow = window.open('', '_blank', 'width=800,height=900,scrollbars=1');
+            
+            const html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Просмотр КП</title>
+                    <style>
+                        body { 
+                            margin: 0; 
+                            padding: 20px; 
+                            background-color: #f0f2f5; 
+                            font-family: 'Inter', sans-serif;
+                        }
+                        .preview-container {
+                            max-width: 800px;
+                            margin: 0 auto;
+                            background: white;
+                            border-radius: 10px;
+                            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                            padding: 20px;
+                        }
+                        .preview-header {
+                            text-align: center;
+                            padding: 15px 0;
+                            margin-bottom: 20px;
+                            border-bottom: 1px solid #e0e0e0;
+                        }
+                        .preview-title {
+                            font-size: 24px;
+                            color: #000;
+                            margin-bottom: 10px;
+                        }
+                        .preview-actions {
+                            display: flex;
+                            justify-content: center;
+                            gap: 15px;
+                            margin-top: 20px;
+                        }
+                        .preview-btn {
+                            padding: 10px 25px;
+                            border: none;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        }
+                        .preview-btn-download {
+                            background: linear-gradient(135deg, #F58220 0%, #D96D0D 100%);
+                            color: white;
+                        }
+                        .preview-btn-close {
+                            background: #e0e0e0;
+                            color: #333;
+                        }
+                        .preview-btn:hover {
+                            transform: translateY(-2px);
+                            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                        }
+                        .spinner {
+                            display: inline-block;
+                            width: 16px;
+                            height: 16px;
+                            border: 3px solid rgba(255,255,255,0.3);
+                            border-radius: 50%;
+                            border-top-color: white;
+                            animation: spin 1s ease-in-out infinite;
+                            margin-right: 8px;
+                        }
+                        @keyframes spin {
+                            to { transform: rotate(360deg); }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="preview-container">
+                        <div class="preview-header">
+                            <div class="preview-title">Предпросмотр коммерческого предложения</div>
+                            <div>Проверьте документ перед сохранением</div>
+                        </div>
+                        <div id="pdf-content">${pdfContent}</div>
+                        <div class="preview-actions">
+                            <button class="preview-btn preview-btn-download" onclick="window.opener.generatePDF(true); window.close();">Скачать PDF</button>
+                            <button class="preview-btn preview-btn-close" onclick="window.close();">Закрыть</button>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            previewWindow.document.open();
+            previewWindow.document.write(html);
+            previewWindow.document.close();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initSelects();
+            initCheckboxes();
+            
+            // Изменяем текст кнопки для мобильных устройств
+            if (isMobileDevice()) {
+                const pdfButton = document.getElementById('pdfButton');
+                if (pdfButton) {
+                    pdfButton.textContent = 'Открыть PDF';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
