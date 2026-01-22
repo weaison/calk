@@ -575,7 +575,7 @@ function generatePDFContent() {
                 <div style="max-width: 700px; margin: 0 auto;">
                     КОНФИДЕНЦИАЛЬНО: Данный документ содержит конфиденциальную информацию. Любое несанкционированное распространение запрещено.
                 </div>
-                <div style="margin-top: ${scaled(3)};">© 2025 ПРО100ПАК</div>
+                <div style="margin-top: ${scaled(3)};">© 2026 ПРО100ПАК</div>
             </div>
         </div>
     `;
