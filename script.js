@@ -445,8 +445,8 @@ function generatePDFContent() {
                     <div style="font-size: ${scale(10)}px; line-height: 1.4; color: #444;">
                         <div><strong>ООО «ПРО100ПАК»</strong></div>
                         <div>г. Москва, ул. Стахановская, 18 ст1</div>
-                        <div>Тел.: +7 (495) 162-85-00</div>
-                        <div>Email: easypackmsk@bk.ru</div>
+                        <div>Тел.: +7 (495) 187-07-70</div>
+                        <div>Email: Info@pro100pack.ru</div>
                         ${managerName ? `<div>Менеджер: ${managerName}</div>` : '<div>Менеджер:</div>'}
                     </div>
                 </div>
